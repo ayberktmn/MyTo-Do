@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "399511616002",
+    "project_id": "myto-do-989c8",
+    "storage_bucket": "myto-do-989c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399511616002:android:b0044f334bc27964a4851b",
+        "android_client_info": {
+          "package_name": "com.ayberk.myto_do"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2QLx0cJias4Lb5dl37czOKQKEVX7i0i8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
