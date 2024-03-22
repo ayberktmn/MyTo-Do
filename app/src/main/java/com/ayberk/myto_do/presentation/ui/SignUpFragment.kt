@@ -7,18 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.ayberk.myto_do.R
 import com.ayberk.myto_do.databinding.FragmentSignUpBinding
-import com.ayberk.myto_do.presentation.viewmodel.LoginViewModel
+import com.ayberk.myto_do.presentation.viewmodel.SignUpViewModel
 import com.ayberk.myto_do.presentation.models.User
 
 
 class SignUpFragment : Fragment() {
 
-    private val viewModel by viewModels<LoginViewModel>()
+    private val viewModel by viewModels<SignUpViewModel>()
     private lateinit var navController : NavController
     private var _binding : FragmentSignUpBinding? = null
     private val binding get() = _binding!!

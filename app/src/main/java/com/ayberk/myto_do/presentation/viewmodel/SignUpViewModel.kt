@@ -1,21 +1,17 @@
 package com.ayberk.myto_do.presentation.viewmodel
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayberk.myto_do.presentation.models.User
 import com.ayberk.myto_do.presentation.util.Resource
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
-
-class LoginViewModel : ViewModel() {
+class SignUpViewModel : ViewModel() {
 
     private val _register = MutableLiveData<Resource<User>>(Resource.Unspecified())
     val register: LiveData<Resource<User>> = _register
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
 
     private val _existingAccountFound = MutableLiveData<Boolean>()
     val existingAccountFound: LiveData<Boolean> = _existingAccountFound
