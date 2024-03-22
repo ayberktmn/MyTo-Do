@@ -58,7 +58,6 @@ class SignUpFragment : Fragment() {
             if (email.isNotEmpty() && pass.isNotEmpty() && verifyPass.isNotEmpty()) {
                 if (pass == verifyPass) {
                     register(email, pass)
-
                 } else {
                     Toast.makeText(context, "Password is not same", Toast.LENGTH_SHORT).show()
                 }
@@ -80,6 +79,11 @@ class SignUpFragment : Fragment() {
     }
     private fun init(view: View) {
         navController = Navigation.findNavController(view)
+        viewModel.existingAccountFound.observe(viewLifecycleOwner) { found ->
+            if (found) {
+                Toast.makeText(requireActivity(), "An account already exists with this email.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {
