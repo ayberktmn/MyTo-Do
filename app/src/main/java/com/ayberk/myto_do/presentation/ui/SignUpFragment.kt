@@ -5,28 +5,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.ayberk.myto_do.R
+import com.ayberk.myto_do.databinding.FragmentSignUpBinding
+import com.ayberk.myto_do.presentation.viewmodel.LoginViewModel
+import com.ayberk.myto_do.presentation.models.User
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignUpFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignUpFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private val viewModel by viewModels<LoginViewModel>()
+    private lateinit var navController : NavController
+    private var _binding : FragmentSignUpBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        viewModel.registrationSuccessful.observe(this) { isSuccessful ->
+            if (isSuccessful) {
+                // Kullanıcı kaydı başarılı olduğunda yönlendirme işlemini gerçekleştir
+                navController.navigate(R.id.action_signUpFragment_to_homeFragment)
+            }
         }
     }
 
@@ -34,27 +37,53 @@ class SignUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
+        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SignUpFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignUpFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        init(view)
+
+        binding.textViewSignIn.setOnClickListener {
+            navController.navigate(R.id.action_signUpFragment_to_signInFragment)
+        }
+
+        binding.nextBtn.setOnClickListener {
+            val email = binding.emailEt.text.toString()
+            val pass = binding.passEt.text.toString()
+            val verifyPass = binding.verifyPassEt.text.toString()
+
+            if (email.isNotEmpty() && pass.isNotEmpty() && verifyPass.isNotEmpty()) {
+                if (pass == verifyPass) {
+                    register(email, pass)
+
+                } else {
+                    Toast.makeText(context, "Password is not same", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(context, "Empty fields are not allowed", Toast.LENGTH_SHORT)
+                    .show()
             }
+        }
+    }
+
+    private fun register(email: String, password: String) {
+        val user = User(email)
+        viewModel.createEmailandPassword(user, password)
+        viewModel.registrationSuccessful.observe(requireActivity()) { isSuccessful ->
+            if (isSuccessful) {
+                Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    private fun init(view: View) {
+        navController = Navigation.findNavController(view)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -44,7 +44,7 @@
         android:layout_width="405dp"
         android:layout_height="100dp"
         android:gravity="center_horizontal"
-        android:text="todo"
+        android:text="My To-Do"
         android:textColor="@color/text_color"
         android:textSize="60sp"
         android:textStyle="italic"
