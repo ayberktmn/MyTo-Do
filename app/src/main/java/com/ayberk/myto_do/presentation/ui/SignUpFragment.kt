@@ -59,23 +59,22 @@ class SignUpFragment : Fragment() {
                     .show()
             }
         }
+        viewModel.showEmailExistsWarning.observe(viewLifecycleOwner) { showWarning ->
+            if (showWarning) {
+                Toast.makeText(requireContext(), "An account already exists with this email.", Toast.LENGTH_SHORT).show()
+            }
+        }
+        viewModel.registrationSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
+            if (isSuccessful) {
+                Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.action_signUpFragment_to_homeFragment)
+            }
+        }
     }
 
     private fun register(email: String, password: String) {
         val user = User(email)
         viewModel.createAccount(user, password)
-        observeRegistrationStatus()
-    }
-
-    private fun observeRegistrationStatus() {
-        viewModel.registrationSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
-            if (isSuccessful) {
-                Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show()
-                navController.navigate(R.id.action_signUpFragment_to_homeFragment)
-            } else {
-                Toast.makeText(context, "User creation failed", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun init(view: View) {
