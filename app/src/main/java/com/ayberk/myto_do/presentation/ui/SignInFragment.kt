@@ -13,7 +13,6 @@ import com.ayberk.myto_do.R
 import com.ayberk.myto_do.databinding.FragmentSignInBinding
 import com.ayberk.myto_do.presentation.models.User
 import com.ayberk.myto_do.presentation.viewmodel.SignInViewModel
-import com.ayberk.myto_do.presentation.viewmodel.SignUpViewModel
 
 class SignInFragment : Fragment() {
 
@@ -48,10 +47,12 @@ class SignInFragment : Fragment() {
             val pass = binding.passEt.text.toString()
 
             if (email.isNotEmpty() && pass.isNotEmpty()) {
+                binding.progressBar.visibility = View.VISIBLE
                 login(email,pass)
             } else {
                 Toast.makeText(context, "Empty fields are not allowed", Toast.LENGTH_SHORT).show()
             }
+            binding.progressBar.visibility = View.GONE
         }
     }
 

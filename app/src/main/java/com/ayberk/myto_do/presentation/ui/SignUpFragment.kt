@@ -24,12 +24,6 @@ class SignUpFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.registrationSuccessful.observe(this) { isSuccessful ->
-            if (isSuccessful) {
-                // Kullanıcı kaydı başarılı olduğunda yönlendirme işlemini gerçekleştir
-                navController.navigate(R.id.action_signUpFragment_to_homeFragment)
-            }
-        }
     }
 
     override fun onCreateView(
@@ -69,20 +63,23 @@ class SignUpFragment : Fragment() {
 
     private fun register(email: String, password: String) {
         val user = User(email)
-        viewModel.createEmailandPassword(user, password)
-        viewModel.registrationSuccessful.observe(requireActivity()) { isSuccessful ->
+        viewModel.createAccount(user, password)
+        observeRegistrationStatus()
+    }
+
+    private fun observeRegistrationStatus() {
+        viewModel.registrationSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
             if (isSuccessful) {
                 Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.action_signUpFragment_to_homeFragment)
+            } else {
+                Toast.makeText(context, "User creation failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     private fun init(view: View) {
         navController = Navigation.findNavController(view)
-        viewModel.existingAccountFound.observe(viewLifecycleOwner) { found ->
-            if (found) {
-                Toast.makeText(requireActivity(), "An account already exists with this email.", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onDestroyView() {
