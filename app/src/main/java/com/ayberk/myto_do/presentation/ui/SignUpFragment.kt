@@ -50,6 +50,7 @@ class SignUpFragment : Fragment() {
 
             if (email.isNotEmpty() && pass.isNotEmpty() && verifyPass.isNotEmpty()) {
                 if (pass == verifyPass) {
+                    binding.progressBarSignUp.visibility = View.VISIBLE
                     register(email, pass)
                 } else {
                     Toast.makeText(context, "Password is not same", Toast.LENGTH_SHORT).show()
@@ -61,11 +62,13 @@ class SignUpFragment : Fragment() {
         }
         viewModel.showEmailExistsWarning.observe(viewLifecycleOwner) { showWarning ->
             if (showWarning) {
+                binding.progressBarSignUp.visibility = View.GONE
                 Toast.makeText(requireContext(), "An account already exists with this email.", Toast.LENGTH_SHORT).show()
             }
         }
         viewModel.registrationSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
             if (isSuccessful) {
+                binding.progressBarSignUp.visibility = View.GONE
                 Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show()
                 navController.navigate(R.id.action_signUpFragment_to_homeFragment)
             }

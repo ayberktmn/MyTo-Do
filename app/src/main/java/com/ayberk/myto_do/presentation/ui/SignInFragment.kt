@@ -47,12 +47,11 @@ class SignInFragment : Fragment() {
             val pass = binding.passEt.text.toString()
 
             if (email.isNotEmpty() && pass.isNotEmpty()) {
-                binding.progressBar.visibility = View.VISIBLE
+                binding.progressBarSignIn.visibility = View.VISIBLE
                 login(email,pass)
             } else {
                 Toast.makeText(context, "Empty fields are not allowed", Toast.LENGTH_SHORT).show()
             }
-            binding.progressBar.visibility = View.GONE
         }
     }
 
@@ -61,6 +60,7 @@ class SignInFragment : Fragment() {
         viewModel.signinEmail(user, password) { isSuccess ->
             if (isSuccess) {
                 // Giriş başarılı oldu, ilgili işlemleri yapabilirsiniz
+                binding.progressBarSignIn.visibility = View.GONE
                 navController.navigate(R.id.action_signInFragment_to_homeFragment)
                 Toast.makeText(context, "Welcome My To-Do", Toast.LENGTH_SHORT).show()
             } else {
