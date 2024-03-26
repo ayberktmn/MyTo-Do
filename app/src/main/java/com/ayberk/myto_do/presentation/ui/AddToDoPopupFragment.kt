@@ -40,6 +40,7 @@ class AddToDoPopupFragment : DialogFragment() {
 
             if (todoTask.isNotEmpty()){
                 listener.onSaveTask(todoTask,binding.todoEt)
+                dismiss()
             }else{
                 Toast.makeText(context,"Please type some task",Toast.LENGTH_SHORT).show()
             }

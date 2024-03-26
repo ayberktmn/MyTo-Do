@@ -10,19 +10,23 @@ import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.ayberk.myto_do.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayberk.myto_do.databinding.FragmentHomeBinding
+import com.ayberk.myto_do.presentation.adapter.TaskAdapter
+import com.ayberk.myto_do.presentation.models.ToDoData
 import com.ayberk.myto_do.presentation.viewmodel.HomeFragmentViewModel
-import com.ayberk.myto_do.presentation.viewmodel.SignInViewModel
 import com.google.android.material.textfield.TextInputEditText
 
-class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener {
+class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener,
+    TaskAdapter.TaskAdapterInterface {
 
     private var isBackPressed = false
     private lateinit var navController: NavController
     private lateinit var binding: FragmentHomeBinding
     private lateinit var popupFragment: AddToDoPopupFragment
     private val viewModel by viewModels<HomeFragmentViewModel>()
+    private lateinit var taskadapter: TaskAdapter
+    private lateinit var toDoItemList: MutableList<ToDoData>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,8 +46,16 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
             isBackPressed = true
         }
         viewModel.init()
-        init(view)
+        init()
         registerEvents()
+        viewModel.fetchTasksFromFirebase()
+
+        viewModel.toDoItemList.observe(viewLifecycleOwner) { newList ->
+            toDoItemList.clear()
+            toDoItemList.addAll(newList)
+            taskadapter.notifyDataSetChanged()
+        }
+
     }
 
     private fun registerEvents(){
@@ -57,19 +69,40 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
         }
     }
 
-    private fun init(view: View) {
-        navController = Navigation.findNavController(view)
+    private fun init() {
+        binding.mainRecyclerView.setHasFixedSize(true)
+        binding.mainRecyclerView.layoutManager = LinearLayoutManager(context)
+        toDoItemList = mutableListOf()
+        taskadapter = TaskAdapter(toDoItemList)
+        taskadapter.setListener(this)
+        binding.mainRecyclerView.adapter = taskadapter
     }
 
     override fun onSaveTask(todo: String, todoEt: TextInputEditText) {
         viewModel.saveTask(todo, todoEt) { isSuccess ->
             requireActivity().runOnUiThread {
                 if (isSuccess) {
-                    Toast.makeText(requireContext(), "Görev başarıyla kaydedildi", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Task saved successfully", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Görev kaydedilirken bir hata oluştu", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "An error occurred while saving the task", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    override fun onDeleteItemClicked(toDoData: ToDoData, position: Int) {
+            viewModel.deleteTask(toDoData,position){isSuccess->
+                requireActivity().runOnUiThread {
+                    if (isSuccess) {
+                        Toast.makeText(requireContext(), "Task deleted successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "An error occurred while deleting the task", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
+
+    override fun onEditItemClicked(toDoData: ToDoData, position: Int) {
+        TODO("Not yet implemented")
     }
 }
