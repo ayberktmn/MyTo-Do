@@ -1,5 +1,6 @@
 package com.ayberk.myto_do.presentation.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.os.Handler
@@ -21,7 +22,6 @@ class SplashFragment : Fragment() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var binding : FragmentSplashBinding
-    private lateinit var navController : NavController
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -29,7 +29,14 @@ class SplashFragment : Fragment() {
         binding = FragmentSplashBinding.inflate(inflater,container,false)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            findNavController().navigate(R.id.action_splashFragment_to_signUpFragment)
+
+            mAuth = FirebaseAuth.getInstance()
+
+            if (mAuth.currentUser != null){
+                findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+            }else{
+                findNavController().navigate(R.id.action_splashFragment_to_signUpFragment)
+            }
         },3000)
 
         return binding.root
