@@ -1,6 +1,7 @@
 package com.ayberk.myto_do.presentation.viewmodel
 
 import android.util.Log
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -78,6 +79,17 @@ class HomeFragmentViewModel : ViewModel() {
             if (it.isSuccessful){
                 callback(true)
             }else{
+                callback(false)
+            }
+        }
+    }
+
+    fun updateTask(map: HashMap<String, Any>, callback: (Boolean) -> Unit) {
+        database.updateChildren(map).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _toDoItemList.value
+                callback(true)
+            } else {
                 callback(false)
             }
         }

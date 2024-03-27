@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ayberk.myto_do.databinding.FragmentHomeBinding
 import com.ayberk.myto_do.presentation.adapter.TaskAdapter
@@ -29,7 +28,7 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
     private lateinit var toDoItemList: MutableList<ToDoData>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        popupFragment = AddToDoPopupFragment()
     }
 
     override fun onCreateView(
@@ -60,11 +59,13 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
 
     private fun registerEvents(){
         binding.addTaskBtn.setOnClickListener {
+            if (popupFragment != null)
+                childFragmentManager.beginTransaction().remove(popupFragment!!).commit()
             popupFragment = AddToDoPopupFragment()
             popupFragment.setListener(this)
             popupFragment.show(
                 childFragmentManager,
-                "AddTodoPopupFragment"
+                AddToDoPopupFragment.TAG
             )
         }
     }
@@ -90,6 +91,21 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
         }
     }
 
+    override fun onUpdateTask(toDoData: ToDoData, todoEt: TextInputEditText) {
+        val map = HashMap<String, Any>()
+        map[toDoData.id.toString()] = toDoData.task.toString()
+
+        viewModel.updateTask(map) { isSuccess ->
+            requireActivity().runOnUiThread {
+                if (isSuccess) {
+                    Toast.makeText(requireContext(), "Task update successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "An error occurred while saving the task", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onDeleteItemClicked(toDoData: ToDoData, position: Int) {
             viewModel.deleteTask(toDoData,position){isSuccess->
                 requireActivity().runOnUiThread {
@@ -103,6 +119,12 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
     }
 
     override fun onEditItemClicked(toDoData: ToDoData, position: Int) {
-        TODO("Not yet implemented")
+        if(popupFragment != null){
+            childFragmentManager.beginTransaction().remove(popupFragment).commit()
+
+            popupFragment = AddToDoPopupFragment.newInstance(toDoData.id.toString(), toDoData.task.toString())
+            popupFragment.setListener(this)
+            popupFragment.show(childFragmentManager,AddToDoPopupFragment.TAG)
+        }
     }
 }
