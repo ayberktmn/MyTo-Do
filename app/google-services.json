@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "399511616002",
+    "firebase_url": "https://myto-do-989c8-default-rtdb.firebaseio.com",
     "project_id": "myto-do-989c8",
     "storage_bucket": "myto-do-989c8.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.ayberk.myto_do"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "399511616002-nj41ohv9a0p4re33ecg9gu4k1hvaf8ua.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ayberk.myto_do",
+            "certificate_hash": "01c774e1cc8ac0232a4df572940c0819dc7385fe"
+          }
+        },
+        {
+          "client_id": "399511616002-6n5ha8akgeoog8mo1932vj3jt46e698f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC2QLx0cJias4Lb5dl37czOKQKEVX7i0i8"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399511616002-6n5ha8akgeoog8mo1932vj3jt46e698f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

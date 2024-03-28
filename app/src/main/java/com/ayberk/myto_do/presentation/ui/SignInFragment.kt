@@ -1,5 +1,6 @@
 package com.ayberk.myto_do.presentation.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,10 @@ import com.ayberk.myto_do.R
 import com.ayberk.myto_do.databinding.FragmentSignInBinding
 import com.ayberk.myto_do.presentation.models.User
 import com.ayberk.myto_do.presentation.viewmodel.SignInViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 
 class SignInFragment : Fragment() {
 
@@ -20,6 +25,7 @@ class SignInFragment : Fragment() {
     private lateinit var navController : NavController
     private var _binding : FragmentSignInBinding? = null
     private val binding get() = _binding!!
+    private val RC_SIGN_IN = 123
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +45,9 @@ class SignInFragment : Fragment() {
 
         init(view)
 
+        binding.gSignInBtn.setOnClickListener {
+            signIn()
+        }
         binding.textViewSignUp.setOnClickListener {
             navController.navigate(R.id.action_signInFragment_to_signUpFragment)
         }
@@ -68,6 +77,32 @@ class SignInFragment : Fragment() {
                 Toast.makeText(context, "Login unsuccessful", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                viewModel.signInWithGoogle(account.idToken!!)
+                navController.navigate(R.id.action_signInFragment_to_homeFragment)
+            } catch (e: ApiException) {
+                Toast.makeText(requireContext(), "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun signIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     private fun init(view: View) {

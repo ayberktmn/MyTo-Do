@@ -32,11 +32,9 @@ class SplashFragment : Fragment() {
 
             mAuth = FirebaseAuth.getInstance()
 
-            if (mAuth.currentUser != null){
-                findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-            }else{
+
                 findNavController().navigate(R.id.action_splashFragment_to_signUpFragment)
-            }
+
         },3000)
 
         return binding.root
