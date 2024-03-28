@@ -46,6 +46,7 @@ class SignInFragment : Fragment() {
         init(view)
 
         binding.gSignInBtn.setOnClickListener {
+            binding.progressBarSignIn.visibility = View.VISIBLE
             signIn()
         }
         binding.textViewSignUp.setOnClickListener {
@@ -74,6 +75,7 @@ class SignInFragment : Fragment() {
                 Toast.makeText(context, "Welcome My To-Do", Toast.LENGTH_SHORT).show()
             } else {
                 // Giriş başarısız oldu, kullanıcıya bilgi verilebilir
+                binding.progressBarSignIn.visibility = View.GONE
                 Toast.makeText(context, "Login unsuccessful", Toast.LENGTH_SHORT).show()
             }
         }
@@ -87,6 +89,7 @@ class SignInFragment : Fragment() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 viewModel.signInWithGoogle(account.idToken!!)
+                binding.progressBarSignIn.visibility = View.GONE
                 navController.navigate(R.id.action_signInFragment_to_homeFragment)
             } catch (e: ApiException) {
                 Toast.makeText(requireContext(), "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
