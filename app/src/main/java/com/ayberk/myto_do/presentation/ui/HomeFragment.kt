@@ -9,11 +9,13 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ayberk.myto_do.R
 import com.ayberk.myto_do.databinding.FragmentHomeBinding
 import com.ayberk.myto_do.presentation.adapter.TaskAdapter
 import com.ayberk.myto_do.presentation.models.ToDoData
-import com.ayberk.myto_do.presentation.viewmodel.HomeFragmentViewModel
+import com.ayberk.myto_do.presentation.viewmodel.HomeViewModel
 import com.google.android.material.textfield.TextInputEditText
 
 class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener,
@@ -23,7 +25,7 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
     private lateinit var navController: NavController
     private lateinit var binding: FragmentHomeBinding
     private lateinit var popupFragment: AddToDoPopupFragment
-    private val viewModel by viewModels<HomeFragmentViewModel>()
+    private val viewModel by viewModels<HomeViewModel>()
     private lateinit var taskadapter: TaskAdapter
     private lateinit var toDoItemList: MutableList<ToDoData>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +47,8 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
             isBackPressed = true
         }
         viewModel.init()
-        init()
+        init(view)
+
         registerEvents()
         viewModel.fetchTasksFromFirebase()
 
@@ -53,6 +56,10 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
             toDoItemList.clear()
             toDoItemList.addAll(newList)
             taskadapter.notifyDataSetChanged()
+        }
+
+        binding.imgProfile.setOnClickListener {
+            navController.navigate(R.id.action_homeFragment_to_profileFragment)
         }
 
     }
@@ -70,13 +77,14 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
         }
     }
 
-    private fun init() {
+    private fun init(view: View) {
         binding.mainRecyclerView.setHasFixedSize(true)
         binding.mainRecyclerView.layoutManager = LinearLayoutManager(context)
         toDoItemList = mutableListOf()
         taskadapter = TaskAdapter(toDoItemList)
         taskadapter.setListener(this)
         binding.mainRecyclerView.adapter = taskadapter
+        navController = Navigation.findNavController(view)
     }
 
     override fun onSaveTask(todo: String, todoEt: TextInputEditText) {

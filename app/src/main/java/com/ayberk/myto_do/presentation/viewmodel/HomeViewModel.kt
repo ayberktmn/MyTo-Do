@@ -1,22 +1,24 @@
 package com.ayberk.myto_do.presentation.viewmodel
 
 import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ayberk.myto_do.presentation.models.ToDoData
+import com.ayberk.myto_do.presentation.ui.AddToDoPopupFragment.Companion.TAG
 import com.ayberk.myto_do.presentation.util.Resource
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class HomeFragmentViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -27,7 +29,7 @@ class HomeFragmentViewModel : ViewModel() {
 
     fun init(){
         auth = FirebaseAuth.getInstance()
-        authId = auth.currentUser!!.uid
+        authId = auth.currentUser?.uid.toString()
         database = Firebase.database.reference.child("Tasks")
             .child(authId)
     }

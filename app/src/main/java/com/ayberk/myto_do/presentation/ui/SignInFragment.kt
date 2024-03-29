@@ -7,17 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.ayberk.myto_do.R
 import com.ayberk.myto_do.databinding.FragmentSignInBinding
 import com.ayberk.myto_do.presentation.models.User
+import com.ayberk.myto_do.presentation.viewmodel.HomeViewModel
 import com.ayberk.myto_do.presentation.viewmodel.SignInViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.GoogleAuthProvider
 
 class SignInFragment : Fragment() {
 
@@ -25,18 +26,19 @@ class SignInFragment : Fragment() {
     private lateinit var navController : NavController
     private var _binding : FragmentSignInBinding? = null
     private val binding get() = _binding!!
-    private val RC_SIGN_IN = 123
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    companion object {
+        private const val RC_SIGN_IN = 9001
     }
+    private var isBackPressed = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentSignInBinding.inflate(inflater,container,false)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            isBackPressed = true
+        }
         return binding.root
     }
 
@@ -91,6 +93,7 @@ class SignInFragment : Fragment() {
                 viewModel.signInWithGoogle(account.idToken!!)
                 binding.progressBarSignIn.visibility = View.GONE
                 navController.navigate(R.id.action_signInFragment_to_homeFragment)
+
             } catch (e: ApiException) {
                 Toast.makeText(requireContext(), "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }

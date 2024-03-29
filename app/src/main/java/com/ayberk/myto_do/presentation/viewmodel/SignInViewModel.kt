@@ -13,7 +13,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 class SignInViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private lateinit var googleSignInClient : GoogleSignInClient
     fun signinEmail(user: User, password: String, onResult: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(user.email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {

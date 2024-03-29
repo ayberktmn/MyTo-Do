@@ -6,5 +6,6 @@
     <string name="enter_your_pass">Enter Your Password .....</string>
     <string name="re_enter_your_pass">Re-enter Your Password .....</string>
     <string name="type_your_task">Type your task .....</string>
+    <string name="email">E-mail</string>
     <string name="default_web_client_id">AIzaSyC2QLx0cJias4Lb5dl37czOKQKEVX7i0i8</string>
 </resources>
