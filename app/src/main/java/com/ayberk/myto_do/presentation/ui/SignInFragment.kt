@@ -95,6 +95,7 @@ class SignInFragment : Fragment() {
                 navController.navigate(R.id.action_signInFragment_to_homeFragment)
 
             } catch (e: ApiException) {
+                binding.progressBarSignIn.visibility = View.GONE
                 Toast.makeText(requireContext(), "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }

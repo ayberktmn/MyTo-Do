@@ -6,4 +6,5 @@
     <color name="text_color">#21108A</color>
     <color name="background_color">#121523</color>
     <color name="secondary_color">#D5CEFF</color>
+    <color name="backgroundtodo">#2196F3</color>
 </resources>
