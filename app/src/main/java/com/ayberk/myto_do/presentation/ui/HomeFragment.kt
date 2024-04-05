@@ -3,10 +3,15 @@ package com.ayberk.myto_do.presentation.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -16,6 +21,7 @@ import com.ayberk.myto_do.databinding.FragmentHomeBinding
 import com.ayberk.myto_do.presentation.adapter.TaskAdapter
 import com.ayberk.myto_do.presentation.models.ToDoData
 import com.ayberk.myto_do.presentation.viewmodel.HomeViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.textfield.TextInputEditText
 
 class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener,
@@ -49,7 +55,6 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
         viewModel.init()
         init(view)
 
-        registerEvents()
         viewModel.fetchTasksFromFirebase()
 
         viewModel.toDoItemList.observe(viewLifecycleOwner) { newList ->
@@ -58,23 +63,45 @@ class HomeFragment : Fragment(), AddToDoPopupFragment.DialogNextBtnClickListener
             taskadapter.notifyDataSetChanged()
         }
 
-        binding.imgProfile.setOnClickListener {
-            navController.navigate(R.id.action_homeFragment_to_profileFragment)
+        binding.imgMenu.setOnClickListener {
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+            }
         }
 
-    }
+        val actionBarDrawerToggle = ActionBarDrawerToggle(
+            requireActivity(), binding.drawerLayout, R.string.Home, R.string.Profile
+        )
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
 
-    private fun registerEvents(){
+        actionBarDrawerToggle.setToolbarNavigationClickListener {
+            navController.navigate(R.id.homeFragment)
+        }
+
+        binding.navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.Home -> navController.navigate(R.id.homeFragment)
+                R.id.Profile -> navController.navigate(R.id.profileFragment)
+                R.id.addtodo -> registerEvents()
+            }
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
         binding.addTaskBtn.setOnClickListener {
-            if (popupFragment != null)
-                childFragmentManager.beginTransaction().remove(popupFragment!!).commit()
-            popupFragment = AddToDoPopupFragment()
-            popupFragment.setListener(this)
-            popupFragment.show(
-                childFragmentManager,
-                AddToDoPopupFragment.TAG
-            )
+            registerEvents()
         }
+    }
+    private fun registerEvents(){
+        if (popupFragment != null)
+            childFragmentManager.beginTransaction().remove(popupFragment!!).commit()
+        popupFragment = AddToDoPopupFragment()
+        popupFragment.setListener(this)
+        popupFragment.show(
+            childFragmentManager,
+            AddToDoPopupFragment.TAG
+        )
     }
 
     private fun init(view: View) {

@@ -72,5 +72,6 @@ class ProfileFragment : Fragment() {
         toDoItemList = mutableListOf()
         taskadapter = TaskProfileAdapter(toDoItemList)
         binding.rcyclerprofiletodo.adapter = taskadapter
+
     }
 }
